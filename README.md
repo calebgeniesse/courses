@@ -1,1 +1,1 @@
-# cs231n
+# courses
