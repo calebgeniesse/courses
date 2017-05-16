@@ -8,7 +8,7 @@ sudo apt-get install --yes python-pip
 sudo apt-get install --yes libjpeg8-dev
 sudo ln -s /usr/lib/x86_64-linux-gnu/libjpeg.so /usr/lib
 conda install --yes pillow
-sudo apt-get build-dep python-imaging
+sudo apt-get build-dep --yes python-imaging
 sudo apt-get install --yes libjpeg8 libjpeg62-dev libfreetype6 libfreetype6-dev
 conda install --yes --file requirements.txt  # Install dependencies
 echo "**************************************************"
