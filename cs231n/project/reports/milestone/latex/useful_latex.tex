@@ -1,0 +1,130 @@
+\documentclass[10pt,twocolumn,letterpaper]{article}
+
+
+%-------------------------------------------------------------------------
+%%%%%%%%% PACKAGES
+%-------------------------------------------------------------------------
+\usepackage{cvpr}
+\usepackage{times}
+\usepackage{epsfig}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{amssymb}
+
+% Include other packages here, before hyperref.
+
+% If you comment hyperref and then uncomment it, you should delete
+% egpaper.aux before re-running latex.  (Or just hit 'q' on the first latex
+% run, let it finish, and you should be clear).
+\usepackage[breaklinks=true,bookmarks=false]{hyperref}
+
+
+
+%-------------------------------------------------------------------------
+%%%%%%%%% CVPR
+%-------------------------------------------------------------------------
+\cvprfinalcopy % *** Uncomment this line for the final submission
+
+\def\cvprPaperID{****} % *** Enter the CVPR Paper ID here
+\def\httilde{\mbox{\tt\raisebox{-.5ex}{\symbol{126}}}}
+
+% Pages are numbered in submission mode, and unnumbered in camera-ready
+%\ifcvprfinal\pagestyle{empty}\fi
+\setcounter{page}{4321}
+
+
+
+%------------------------------------------------------------------------%
+%%%%%%%%%-------------------BEGIN DOCUMENT-----------------------%%%%%%%%%
+%------------------------------------------------------------------------%
+\begin{document}
+
+
+
+%-------------------------------------------------------------------------
+%%%%%%%%% LATEX EXAMPLES
+%-------------------------------------------------------------------------
+\section{Useful Macros}
+\noindent
+Useful Macros:\\
+\begin{tabular}{ll}
+ \verb'\eg' &  \eg \\
+ \verb'\etal' &  Author \etal. \hspace \etal-\cite{Authors14} \\
+ \verb'\footnote' & \verb'\footnote {I'm a footnote.}'\\
+ \verb'\includegraphics' & \verb'\includegraphics[width=0.8]{myfile.eps}'  \\
+ %\verb'' &   \\
+\end{tabular}\\
+
+
+
+
+
+%-------------------------------------------------------------------------
+\section{Figures}
+\begin{figure}[t]
+\begin{center}
+\fbox{\rule{0pt}{2in} \rule{0.9\linewidth}{0pt}}
+   %\includegraphics[width=0.8\linewidth]{egfigure.eps}
+\end{center}
+   \caption{Example of caption.  It is set in Roman so that mathematics
+   (always set in Roman: $B \sin A = A \sin B$) may be included without an
+   ugly clash.}
+\label{fig:long}
+\label{fig:onecol}
+\end{figure}
+
+\begin{figure*}
+\begin{center}
+\fbox{\rule{0pt}{2in} \rule{.9\linewidth}{0pt}}
+\end{center}
+   \caption{Example of a short caption, which should be centered.}
+\label{fig:short}
+\end{figure*}
+
+
+
+\subsection{Graphics}
+{\small\begin{verbatim}
+   \usepackage[dvips]{graphicx} ...
+   \includegraphics[width=0.8\linewidth]
+                   {myfile.eps}
+\end{verbatim}
+}
+
+
+
+%-------------------------------------------------------------------------
+\section{Tabular}
+\noindent
+Compare the following:\\
+\begin{tabular}{ll}
+ \verb'$conf_a$' &  $conf_a$ \\
+ \verb'$\mathit{conf}_a$' & $\mathit{conf}_a$
+\end{tabular}\\
+
+
+
+%-------------------------------------------------------------------------
+\subsection{Tables}
+\begin{table}
+\begin{center}
+\begin{tabular}{|l|c|}
+\hline
+Method & Frobnability \\
+\hline\hline
+Theirs & Frumpy \\
+Yours & Frobbly \\
+Ours & Makes one's heart Frob\\
+\hline
+\end{tabular}
+\end{center}
+\caption{Results.   Ours is better.}
+\end{table}
+
+
+
+
+%------------------------------------------------------------------------%
+%%%%%%%%%--------------------END DOCUMENT------------------------%%%%%%%%%
+%------------------------------------------------------------------------%
+\end{document}
