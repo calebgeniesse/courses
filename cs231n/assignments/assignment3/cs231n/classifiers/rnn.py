@@ -137,7 +137,60 @@ class CaptioningRNN(object):
         # defined above to store loss and gradients; grads[k] should give the      #
         # gradients for self.params[k].                                            #
         ############################################################################
-        pass
+        cache = {}
+        
+        ### Forward Pass
+        # (1) project features => h0
+        h0, cache['proj'] = affine_forward(features, W_proj, b_proj)
+        
+        # (2) transform captions_in => x
+        x, cache['embed'] = word_embedding_forward(captions_in, W_embed)
+
+        # (3) process x, h0 => h        
+        if self.cell_type == 'rnn':
+            h, cache['rnn'] = rnn_forward(x, h0, Wx, Wh, b)
+        elif self.cell_type == 'lstm':
+            h, cache['lstm'] = lstm_forward(x, h0, Wx, Wh, b)
+        else:
+            raise ValueError('Invalid cell_type "%s"' % self.cell_type)
+
+        # (4) compute vocab scores over h
+        scores, cache['scores'] = temporal_affine_forward(h, W_vocab, b_vocab)
+
+        # (5) compute loss
+        loss, dscores = temporal_softmax_loss(scores, captions_out, mask)
+
+
+        ### Backward Pass and Gradient Computation
+        # backprop into (4) 
+        dh, dW_vocab, db_vocab = temporal_affine_backward(dscores, cache['scores'])
+       
+        # backprop into (3)
+        if self.cell_type == 'rnn':
+            dx, dh0, dWx, dWh, db = rnn_backward(dh, cache['rnn'])
+        elif self.cell_type == 'lstm':
+            dx, dh0, dWx, dWh, db = lstm_backward(dh, cache['lstm'])
+        else:
+            raise ValueError('Invalid cell_type "%s"' % self.cell_type)
+
+        # backprop into (2)
+        dW_embed = word_embedding_backward(dx, cache['embed'])
+        
+        # backprop into (1)
+        dfeatures, dW_proj, db_proj = affine_backward(dh0, cache['proj'])
+        
+
+        ### Store grads
+        grads = dict(
+            # params for (1)
+            W_proj=dW_proj, b_proj=db_proj,
+            # params for (2)
+            W_embed=dW_embed,
+            # params for (3)
+            Wx=dWx, Wh=dWh, b=db,
+            # params for (4)
+            W_vocab=dW_vocab, b_vocab=db_vocab,
+        )
         ############################################################################
         #                             END OF YOUR CODE                             #
         ############################################################################
@@ -199,7 +252,42 @@ class CaptioningRNN(object):
         # functions; you'll need to call rnn_step_forward or lstm_step_forward in #
         # a loop.                                                                 #
         ###########################################################################
-        pass
+    
+        # project features => h0
+        hidden, _ = affine_forward(features, W_proj, b_proj)
+        
+        # init cell state to 0
+        cell_state = 0.0    
+
+        # set first word in to <START>
+        captions[:, 0] = self._start
+
+        # forward step loop 
+        for t in range(1,max_length):
+        
+            word_in = captions[:, t-1]
+
+            # (1) embed word_in 
+            embedded, _ = word_embedding_forward(word_in, W_embed)
+
+            # (2) make RNN step to get next hidden state
+            if self.cell_type == 'rnn':
+                hidden, _ = rnn_step_forward(embedded, hidden, Wx, Wh, b)        
+            elif self.cell_type == 'lstm':
+                hidden, cell_state, _ = lstm_step_forward(
+                    embedded, hidden, cell_state, Wx, Wh, b)
+            else:   
+                raise ValueError('Invalid cell_type "%s"' % self.cell_type)
+
+            # (3) get scores for all words in vocab using next hidden state
+            scores, _ = affine_forward(hidden, W_vocab, b_vocab)
+
+            # (4) select highest score as next word, store in captions
+            captions[:, t] = np.argmax(scores, axis=1)
+            
+
+        # store <END> token after sampling
+        captions[:, -1] = self._end
         ############################################################################
         #                             END OF YOUR CODE                             #
         ############################################################################
